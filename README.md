@@ -1,2 +1,2 @@
 # TimeUtilities
-Time routines to deal with time-series lists and plots in Python.
+A class to deal with time-series lists and plots in Python.
