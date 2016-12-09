@@ -3,9 +3,10 @@
 from datetime import date, datetime, time
 from matplotlib.dates import date2num, num2date
 from math import floor
+from scipy import arctan2, arcsin, cos, sin, cos, pi
 
 
-class TimeUtilities:
+class TimeUtilities(object):
 
     """ Several mehods to deal with time-series lists and plots
     """
@@ -231,6 +232,86 @@ class TimeUtilities:
             int(275 * month / 9) + dom + 1721013.5 + ut / 24 - 0.5 * sig + 0.5
 
         return jd
+
+
+    def SubSol(self, datetime):
+
+        """
+            Subsolar geocentric latitude and longitude.
+        """
+
+        # convert to year, day of year and seconds since midnight
+        year = datetime.year
+        doy = datetime.timetuple().tm_yday
+        ut = datetime.hour*3600 + datetime.minute*60 + datetime.second
+
+        if not 1601 <= year <= 2100:
+            raise ValueError('Year must be in [1601, 2100]')
+
+        yr = year - 2000
+
+        nleap = floor((year-1601)/4)
+        nleap = nleap - 99
+        if year <= 1900:
+            ncent = floor((year-1601)/100)
+            ncent = 3 - ncent
+            nleap = nleap + ncent
+
+        l0 = -79.549 + (-0.238699*(yr-4*nleap) + 3.08514e-2*nleap)
+
+        g0 = -2.472 + (-0.2558905*(yr-4*nleap) - 3.79617e-2*nleap)
+
+        # Days (including fraction) since 12 UT on January 1 of IYR:
+        df = (ut/86400 - 1.5) + doy
+
+        # Addition to Mean longitude of Sun since January 1 of IYR:
+        lf = 0.9856474*df
+
+        # Addition to Mean anomaly since January 1 of IYR:
+        gf = 0.9856003*df
+
+        # Mean longitude of Sun:
+        l = l0 + lf
+
+        # Mean anomaly:
+        g = g0 + gf
+        grad = g*pi/180
+
+        # Ecliptic longitude:
+        lmbda = l + 1.915*sin(grad) + 0.020*sin(2*grad)
+        lmrad = lmbda*pi/180
+        sinlm = sin(lmrad)
+
+        # Days (including fraction) since 12 UT on January 1 of 2000:
+        n = df + 365*yr + nleap
+
+        # Obliquity of ecliptic:
+        epsilon = 23.439 - 4e-7*n
+        epsrad = epsilon*pi/180
+
+        # Right ascension:
+        alpha = arctan2(cos(epsrad)*sinlm, cos(lmrad)) * 180/pi
+
+        # Declination:
+        delta = arcsin(sin(epsrad)*sinlm) * 180/pi
+
+        # Subsolar latitude:
+        sslat = delta
+
+        # Equation of time (degrees):
+        etdeg = l - alpha
+        nrot = round(etdeg/360)
+        etdeg = etdeg - 360*nrot
+
+        # Apparent time (degrees):
+        aptime = ut/240 + etdeg    # Earth rotates one degree every 240 s.
+
+        # Subsolar longitude:
+        sslon = 180 - aptime
+        nrot = round(sslon/360)
+        sslon = sslon - 360*nrot
+
+        return sslat, sslon
 
 
 #

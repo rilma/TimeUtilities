@@ -1,10 +1,10 @@
-
-from timeutil.timeutil import TimeUtilities
-
-if __name__ == '__main__':
+if __name__ == '__main__':    
 
     """ Examples
     """
+
+    from datetime import datetime
+    from timeutil.timeutil import TimeUtilities
 
     Obj = TimeUtilities()
 
@@ -40,4 +40,7 @@ if __name__ == '__main__':
 
     # Return Julian date
     print(Obj.JD2GD(Obj.GD2JD(2014,11,9,0)))
+
+    # Coord. of the subsolar point
+    print(Obj.SubSol(datetime(2004,11,21,17,0,0)))
 
