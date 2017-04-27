@@ -23,7 +23,7 @@ def test_time():
     assert_equal(Obj.ToMoonTime(2004,11,9),(37, 5, 20, 20, 26, 2))
 
     # Convert hour in floating-point number in hour, minute, second (integers)
-    assert Obj.ToHMS(10.735) == (10, 44, 5)
+    assert_equal(Obj.ToHMS(10.735),(10, 44, 5))
 
     # Convert UTC to local time
     assert_allclose(Obj.UT2LT(12.,-75,2004,314), 7.)

@@ -65,20 +65,13 @@ class TimeUtilities(object):
         """ Convert hr floating-value into [hour, minute, second]
         """
 
-        hh_f = hr
-        hh = int(floor(hh_f))
+        hh = int(hr)
 
-        mm_f = 60. * (hr - float(hh))
-        mm = int(floor(mm_f))
+        mm = int(60 * (hr % 1))
 
-        ss_f = 60. * (mm_f - float(mm))
-        ss = int(floor(ss_f))
+        ss = int(3600 * ((hr - hh - mm/60) % 1))
 
         return hh, mm, ss
-
-    #
-    # End of 'ToHMS'
-    #####
 
 
     def ToMoonTime( self, year, month, dom, hour=0, minute=0, second=0 ):

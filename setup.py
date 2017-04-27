@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-req=['numpy','matplotlib']
+req=['nose','numpy','matplotlib']
 # %%
 import pip
 try:
