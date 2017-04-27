@@ -1,14 +1,13 @@
-if __name__ == '__main__':    
+#!/usr/bin/env python
+from datetime import datetime
+from timeutil import TimeUtilities
 
-    """ Examples
-    """
 
-    from datetime import datetime
-    from timeutil.timeutil import TimeUtilities
+def example01():
 
     Obj = TimeUtilities()
 
-    # Return number of days since 0001-01-01 00:00:00 UTC 
+    # Return number of days since 0001-01-01 00:00:00 UTC
     print(Obj.ToTime(2004,11,9))
 
     # Return day of year
@@ -44,3 +43,5 @@ if __name__ == '__main__':
     # Coord. of the subsolar point
     print(Obj.SubSol(datetime(2004,11,21,17,0,0)))
 
+if __name__ == '__main__':
+    example01()
