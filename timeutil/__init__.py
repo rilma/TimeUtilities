@@ -112,7 +112,7 @@ class TimeUtilities(object):
         lsec2tsec = 0.9843529666671
 
         # lunar cycle to terrestrial seconds
-        lcy2tsec = 24 * 60 * 60 * lsec2tsec
+        lcy2tsec = 86400 * lsec2tsec
 
         # Time lapsed in number of lunar cycles
         tlp /= lcy2tsec
@@ -122,28 +122,28 @@ class TimeUtilities(object):
         tlp += 12 * 30 + 30 + 1
 
         # from lunar cycles to lunar hour
-        dummy = ( tlp - floor( tlp ) ) * 24
-        lhour = int( floor( dummy ) )
+        dummy = tlp % 1 * 24
+        lhour = int(dummy)
 
         # from lunar hour to lunar minute
-        dummy = ( dummy - floor( dummy ) ) * 60
-        lminute = int( floor( dummy ) )
+        dummy = dummy % 1 * 60
+        lminute = int(dummy)
 
         # from lunar minutes to lunar seconds
-        dummy = ( dummy - floor( dummy ) ) * 60
-        lsecond = int( floor( dummy ) )
+        dummy = dummy % 1 * 60
+        lsecond = int(dummy)
 
         # lunar year
-        dummy = tlp / ( 12. * 30. )
-        lyear = int( floor( dummy ) )
+        dummy = tlp / (12. * 30.)
+        lyear = int(dummy)
 
         # lunar day
-        dummy = (dummy - floor( dummy ) ) * 12
-        lday = int( floor( dummy ) )
+        dummy = dummy % 1 * 12
+        lday = int(dummy)
 
         # lunar cycle
-        dummy = (dummy - floor( dummy ) ) * 30
-        lcycle = int( floor( dummy ) )
+        dummy = dummy % 1 * 30
+        lcycle = int(dummy)
 
         return lyear, lday, lcycle, lhour, lminute, lsecond
 

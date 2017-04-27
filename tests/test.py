@@ -29,7 +29,9 @@ def test_time():
     assert_allclose(Obj.UT2LT(12.,-75,2004,314), 7.)
 
     # Return x-axis label for a given time interval in number of days since 0001-01-01 00:00:00 UTC
-    assert Obj.TimeLabel([Obj.ToTime(2004,11,9), Obj.ToTime(2004,11,9,23,59,59)]) == ('11/09/2004 (UT)', '20041109')
+    assert_equal(Obj.TimeLabel([Obj.ToTime(2004,11,9),
+                                Obj.ToTime(2004,11,9,23,59,59)]),
+                                ('11/09/2004 (UT)', '20041109'))
 
     # Return the number of days since 0001-01-01 00:00:00 UTC given the number of seconds since Unix time
     assert_allclose(Obj.S2DN(1e6),719174.574074074)
