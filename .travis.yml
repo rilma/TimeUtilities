@@ -42,6 +42,9 @@ install:
 
     - python setup.py develop
 
-script: coverage run tests/test.py -v
+script: 
+    - python tests/test.py
 
-after_success: coveralls
+after_success: 
+    - coverage run tests/test.py
+    - coveralls
