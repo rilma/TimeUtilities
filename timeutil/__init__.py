@@ -1,4 +1,4 @@
-from datetime import date, datetime, time
+from datetime import date, datetime
 from matplotlib.dates import date2num, num2date
 from math import floor
 from numpy import arctan2, arcsin, sin, cos, pi
@@ -21,9 +21,9 @@ class TimeUtilities(object):
         d = datetime(year, month, dom, hh, mm, ss, micsec) - datetime(1,1,1)
         dd = d.days
         if d.seconds > 0:
-            dd += 86400./d.seconds
+            dd += d.seconds/86400.
 
-        return dd + 1  # +1 by convention
+        return dd + 1.  # +1 by convention
 
 
     def CalcDOY(self, year, month, dom):
@@ -38,11 +38,8 @@ class TimeUtilities(object):
 
         """ Check if a year is leap
         """
+        return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
 
-        d0 = self.ToTime(year, 1, 1)
-        df = self.ToTime(year, 12, 31)
-
-        return (True if ((df - d0) == 365) else False)
 
 
     def CalcMDOM(self, doy, year):
@@ -179,21 +176,20 @@ class TimeUtilities(object):
         return slt
 
 
-    def TimeLabel(self, dtrange, strutc='UT'):
-
+    def TimeLabel(self, dt, strutc='UT'):
         """ Generate x-axis label needed in time-series plots
         """
 
-        dtobj = num2date(dtrange)
+        d = num2date(dt)
 
-        if (floor(dtrange[1]) - floor(dtrange[0]) >= 1.0):
-            tlabel = "%s-%s (%s)" % (dtobj[0].strftime('%m/%d'),\
-                                    dtobj[1].strftime('%d/%Y'), strutc)
-            tfname = '%s-%s' % (dtobj[0].strftime('%Y%m%d'),\
-                                dtobj[1].strftime('%Y%m%d'))
-        else :
-            tlabel = "%s (%s)" % (dtobj[0].strftime('%m/%d/%Y'), strutc)
-            tfname = '%s' % dtobj[0].strftime('%Y%m%d')
+        if int(dt[1] - dt[0]) >= 1:
+            tlabel = "%s-%s (%s)" % (d[0].strftime('%m/%d'),
+                                     d[1].strftime('%d/%Y'), strutc)
+            tfname = '%s-%s' % (d[0].strftime('%Y%m%d'),
+                                d[1].strftime('%Y%m%d'))
+        else:
+            tlabel = "%s (%s)" % (d[0].strftime('%m/%d/%Y'), strutc)
+            tfname = '%s'      % d[0].strftime('%Y%m%d')
 
         return tlabel, tfname
 
