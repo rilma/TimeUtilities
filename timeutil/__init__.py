@@ -1,5 +1,4 @@
-from datetime import datetime
-from matplotlib.dates import  num2date
+from datetime import datetime,timedelta
 from numpy import arctan2, arcsin, sin, cos,degrees,radians
 
 
@@ -24,6 +23,15 @@ class TimeUtilities(object):
 
         return dd + 1.  # +1 by convention
 
+    def todatetime(self,datenum):
+        if isinstance(datenum,(float,int)):
+            return datetime.utcfromtimestamp(86400*(datenum - self.ToTime(1970,1,1)))
+        else:  # iterable
+            dt = []
+            for d in datenum:
+                dt.append(self.todatetime(d))
+
+            return dt
 
     def CalcDOY(self, year, month, dom):
 
@@ -69,7 +77,7 @@ class TimeUtilities(object):
 
         mm = int(60 * (hr % 1))
 
-        ss = int(3600 * ((hr - hh - mm/60) % 1))
+        ss = int(3600 * ((hr % 1 - mm/60) % 1))
 
         return hh, mm, ss
 
@@ -171,20 +179,20 @@ class TimeUtilities(object):
         return slt
 
 
-    def TimeLabel(self, dt, strutc='UT'):
+    def TimeLabel(self, datenum, strutc='UT'):
         """ Generate x-axis label needed in time-series plots
         """
 
-        d = num2date(dt)
+        dt = self.todatetime(datenum)
 
-        if int(dt[1] - dt[0]) >= 1:
-            tlabel = "%s-%s (%s)" % (d[0].strftime('%m/%d'),
-                                     d[1].strftime('%d/%Y'), strutc)
-            tfname = '%s-%s' % (d[0].strftime('%Y%m%d'),
-                                d[1].strftime('%Y%m%d'))
+        if dt[1] - dt[0] >= timedelta(1):
+            tlabel = "%s-%s (%s)" % (dt[0].strftime('%m/%d'),
+                                     dt[1].strftime('%d/%Y'), strutc)
+            tfname = '%s-%s' % (dt[0].strftime('%Y%m%d'),
+                                dt[1].strftime('%Y%m%d'))
         else:
-            tlabel = "%s (%s)" % (d[0].strftime('%m/%d/%Y'), strutc)
-            tfname = '%s'      % d[0].strftime('%Y%m%d')
+            tlabel = "%s (%s)" % (dt[0].strftime('%m/%d/%Y'), strutc)
+            tfname = '%s'      % dt[0].strftime('%Y%m%d')
 
         return tlabel, tfname
 
