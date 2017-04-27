@@ -1,5 +1,5 @@
 from datetime import datetime
-from numpy.testing import assert_allclose,run_module_suite
+from numpy.testing import assert_allclose,run_module_suite,assert_equal
 #
 from timeutil import TimeUtilities
 
@@ -20,7 +20,7 @@ def test_time():
     assert Obj.CalcMDOM(314, 2004)  == (11, 9)
 
     # Return the time in the Moon
-    assert Obj.ToMoonTime(2004,11,9) == (37, 5, 21, 8, 37, 29)
+    assert_equal(Obj.ToMoonTime(2004,11,9),(37, 5, 20, 20, 26, 2))
 
     # Convert hour in floating-point number in hour, minute, second (integers)
     assert Obj.ToHMS(10.735) == (10, 44, 5)

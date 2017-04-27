@@ -18,8 +18,12 @@ class TimeUtilities(object):
         """ Return floating-point number representing the number of days
             since 0001-01-01 00:00:00 UTC, plus one.
         """
+        d = datetime(year, month, dom, hh, mm, ss, micsec) - datetime(1,1,1)
+        dd = d.days
+        if d.seconds > 0:
+            dd += 86400./d.seconds
 
-        return date2num(datetime.combine(date(year, month, dom), time(hh, mm, ss, micsec)))
+        return dd + 1  # +1 by convention
 
 
     def CalcDOY(self, year, month, dom):
@@ -80,7 +84,7 @@ class TimeUtilities(object):
     #####
 
 
-    def ToMoonTime( self, year=2003, month=11, dom=21, hour=12, minute=0, second=0 ):
+    def ToMoonTime( self, year, month, dom, hour=0, minute=0, second=0 ):
 
         """
         Convert Earth's time to lunar clock
@@ -95,15 +99,14 @@ class TimeUtilities(object):
         """
 
         # Time to be converted ...
+        ts = datetime(year,month,dom,hour,minute,second)
 
-        ts = self.ToTime( year, month, dom, hour, minute, second, 0 )
-
-        # Neil Armstron set foot on the Moon on July 21st, 1969 at 02:56:15 UT so
+        # Neil Armstrong set foot on the Moon on July 21st, 1969 at 02:56:15 UT so
         # this is the point in time for the calendar to start
         #t0 = time_util.totime( 1969, 7, 21, 2, 56, 15, 0 )[ 0 ]
-        t0 = self.ToTime( 1969, 7, 21, 2, 56, 15, 0 )
+        t0 = datetime( 1969, 7, 21, 2, 56, 15, 0 )
 
-        tlp = ( ts - t0 ) / ( 24. * 3600. )
+        tlp = ( ts - t0 ).total_seconds()
 
         # a lunar second in terrestrial seconds
         lsec2tsec = 0.9843529666671
@@ -112,7 +115,7 @@ class TimeUtilities(object):
         lcy2tsec = 24 * 60 * 60 * lsec2tsec
 
         # Time lapsed in number of lunar cycles
-        tlp = ( ts - t0 ) *  24 * 60 * 60 / lcy2tsec
+        tlp /= lcy2tsec
 
         # As 't0' represents 01-01-01 'nabla' 00:00:00, I add 1 lunar year,
         # 1 lunar day, and 1 lunar cycle, in lunar cycle units
@@ -143,10 +146,6 @@ class TimeUtilities(object):
         lcycle = int( floor( dummy ) )
 
         return lyear, lday, lcycle, lhour, lminute, lsecond
-
-    #
-    # End of 'toMoonTime'
-    #####
 
 
     def UT2LT(self, ut, glon, iyyy, ddd):
