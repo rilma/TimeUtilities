@@ -1,6 +1,8 @@
 from datetime import datetime
-from timeutil.timeutil import TimeUtilities
 from numpy.testing import assert_allclose,run_module_suite
+#
+from timeutil import TimeUtilities
+
 
 def test_time():
     Obj = TimeUtilities()
