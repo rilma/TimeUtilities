@@ -141,30 +141,32 @@ class TimeUtilities(object):
     def UT2LT(self, ut, glon, iyyy, ddd):
 
         """ Convert UTC to Local Time
+        GLON in DEGREES
         """
 
-        xlon = ( glon - 360. if glon > 180. else glon )
+        xlon = glon - 360. if glon > 180. else glon
+
         slt = ut + xlon / 15.
-        if (slt >= 0.) & (slt <= 24.): return slt
+        if (slt >= 0.) & (slt <= 24.):
+            return slt
 
         if slt > 24.:
             slt -= 24.
             ddd += 1.
             dddend = 365.
-            if (iyyy / 4. * 4. == iyyy): dddend = 366.
+            if self.IsLeapYear(iyyy):
+                dddend = 366.
             if (ddd > dddend):
                 iyyy += 1.
                 ddd = 1.
-            return slt
-
-        slt += 24.
-        ddd -= 1.
-        if (ddd < 1.):
-            iyyy -= 1.
-            ddd = 365.
-            # leap year if evenly divisible by 4 and not by 100, except if evenly
-            # divisible by 400. Thus 2000 will be a leap year.
-            if (iyyy / 4. * 4. == iyyy): ddd = 366.
+        else:
+            slt += 24.
+            ddd -= 1.
+            if (ddd < 1.):
+                iyyy -= 1.
+                ddd = 365.
+                if self.IsLeapYear(iyyy):
+                    ddd = 366.
 
         return slt
 
