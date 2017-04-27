@@ -38,7 +38,7 @@ def test_time():
     assert_allclose(Obj.S2DN(1e6),719174.574074074)
 
     # Return Gregorian date
-    assert_allclose(Obj.GD2JD(2014,11,9), 2456971.)
+    assert_allclose(Obj.GD2JD(2014,11,9), 2456970.5)
 
     # Return Julian date
     assert_allclose(Obj.JD2GD(Obj.GD2JD(2014,11,9,0)), 735546.)

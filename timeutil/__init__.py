@@ -1,7 +1,6 @@
-from datetime import date, datetime
-from matplotlib.dates import date2num, num2date
-from math import floor
-from numpy import arctan2, arcsin, sin, cos, pi
+from datetime import datetime
+from matplotlib.dates import  num2date
+from numpy import arctan2, arcsin, sin, cos,degrees,radians
 
 
 class TimeUtilities(object):
@@ -31,7 +30,8 @@ class TimeUtilities(object):
         """ Return the day of year
         """
 
-        return int(self.ToTime(year, month, dom) - self.ToTime(year, 1, 1) + 1.)
+        return datetime(year,month,dom).timetuple().tm_yday
+
 
 
     def IsLeapYear(self, year):
@@ -189,35 +189,37 @@ class TimeUtilities(object):
         return tlabel, tfname
 
 
-    def S2DN(self, input):
+    def S2DN(self, tunix):
 
         """ Convert # of seconds from 1/1/1970 to number of days from 1/1/1
         """
 
-        return(input / (24 * 3600.) + date2num(date(1970, 1, 1)))
+        return tunix / (24 * 3600.) + self.ToTime(1970, 1, 1)
 
 
-    def JD2GD(self, input):
+    def JD2GD(self, jt):
 
-        """ Convert Julian to Greogorian time
+        """ Convert Julian to Gregorian time
         """
 
-        inseconds = 86400. * (input - self.GD2JD(1970, 1, 1, 0, 0, 0))
+        inseconds = 86400. * (jt - self.GD2JD(1970, 1, 1, 0, 0, 0))
 
         return self.S2DN(inseconds)
 
 
-    def GD2JD(self, year, month, dom, hour=12, minute=0, second=0):
+    def GD2JD(self, year, month, dom, hour=0, minute=0, second=0):
 
         """ Convert Gregorian time to Julian date
         """
 
         ut = hour + minute / 60. + second / 3600.
-        total_seconds = hour * 3600. + minute * 60. + second
-        fracday = total_seconds / 86400.
-        sig = ( 1 if (100 * year + month -190002.5) > 0 else -1 )
-        jd = 367. * year - int(7 * (year + int((month + 9) / 12)) / 4) + \
-            int(275 * month / 9) + dom + 1721013.5 + ut / 24 - 0.5 * sig + 0.5
+#        total_seconds = hour * 3600. + minute * 60. + second
+#        fracday = total_seconds / 86400.
+        sig =  1 if (100 * year + month -190002.5) > 0 else -1
+        jd = (367. * year -
+              int(7 * (year + int((month + 9) / 12)) / 4) +
+              int(275 * month / 9) + dom + 1721013.5 + ut / 24 -
+              0.5 * sig + 0.5)
 
         return jd
 
@@ -238,10 +240,10 @@ class TimeUtilities(object):
 
         yr = year - 2000
 
-        nleap = floor((year-1601)/4)
+        nleap = int((year-1601)/4)
         nleap = nleap - 99
         if year <= 1900:
-            ncent = floor((year-1601)/100)
+            ncent = int((year-1601)/100)
             ncent = 3 - ncent
             nleap = nleap + ncent
 
@@ -263,11 +265,11 @@ class TimeUtilities(object):
 
         # Mean anomaly:
         g = g0 + gf
-        grad = g*pi/180
+        grad = radians(g)
 
         # Ecliptic longitude:
         lmbda = l + 1.915*sin(grad) + 0.020*sin(2*grad)
-        lmrad = lmbda*pi/180
+        lmrad = radians(lmbda)
         sinlm = sin(lmrad)
 
         # Days (including fraction) since 12 UT on January 1 of 2000:
@@ -275,13 +277,13 @@ class TimeUtilities(object):
 
         # Obliquity of ecliptic:
         epsilon = 23.439 - 4e-7*n
-        epsrad = epsilon*pi/180
+        epsrad = radians(epsilon)
 
         # Right ascension:
-        alpha = arctan2(cos(epsrad)*sinlm, cos(lmrad)) * 180/pi
+        alpha = degrees(arctan2(cos(epsrad)*sinlm, cos(lmrad)))
 
         # Declination:
-        delta = arcsin(sin(epsrad)*sinlm) * 180/pi
+        delta = degrees(arcsin(sin(epsrad)*sinlm))
 
         # Subsolar latitude:
         sslat = delta
@@ -300,15 +302,3 @@ class TimeUtilities(object):
         sslon = sslon - 360*nrot
 
         return sslat, sslon
-
-
-#
-# End of "TimeUtilities"
-#####
-
-
-
-
-if __name__ == '__main__':
-
-    pass
