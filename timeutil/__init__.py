@@ -1,3 +1,4 @@
+from __future__ import division
 from datetime import datetime,timedelta
 from numpy import arctan2, arcsin, sin, cos,degrees,radians
 
