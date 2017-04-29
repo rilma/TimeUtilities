@@ -1,8 +1,10 @@
+.coverage
 *.h5
 
 data/
 dist/
 bin/
+venv35/
 
 archive/
 
