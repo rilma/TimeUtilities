@@ -1,6 +1,6 @@
 from __future__ import division
-from datetime import datetime,timedelta
-from numpy import arctan2, arcsin, sin, cos,degrees,radians
+from datetime import datetime, timedelta
+from numpy import arctan2, arcsin, sin, cos, degrees, radians
 
 
 class TimeUtilities(object):
@@ -11,21 +11,20 @@ class TimeUtilities(object):
     def __init__(self):
         pass
 
-
     def ToTime(self, year, month, dom, hh=0, mm=0, ss=0, micsec=0):
 
         """ Return floating-point number representing the number of days
             since 0001-01-01 00:00:00 UTC, plus one.
         """
-        d = datetime(year, month, dom, hh, mm, ss, micsec) - datetime(1,1,1)
+        d = datetime(year, month, dom, hh, mm, ss, micsec) - datetime(1, 1, 1)
         dd = d.days
         if d.seconds > 0:
             dd += d.seconds/86400.
 
         return dd + 1.  # +1 by convention
 
-    def todatetime(self,datenum):
-        if isinstance(datenum,(float,int)):
+    def todatetime(self, datenum):
+        if isinstance(datenum, (float, int)):
             return datetime.utcfromtimestamp(86400*(datenum - self.ToTime(1970,1,1)))
         else:  # iterable
             dt = []
@@ -83,7 +82,7 @@ class TimeUtilities(object):
         return hh, mm, ss
 
 
-    def ToMoonTime( self, year, month, dom, hour=0, minute=0, second=0 ):
+    def ToMoonTime(self, year, month, dom, hour=0, minute=0, second=0):
 
         """
         Convert Earth's time to lunar clock
@@ -98,14 +97,14 @@ class TimeUtilities(object):
         """
 
         # Time to be converted ...
-        ts = datetime(year,month,dom,hour,minute,second)
+        ts = datetime(year, month, dom, hour, minute, second)
 
         # Neil Armstrong set foot on the Moon on July 21st, 1969 at 02:56:15 UT so
         # this is the point in time for the calendar to start
-        #t0 = time_util.totime( 1969, 7, 21, 2, 56, 15, 0 )[ 0 ]
-        t0 = datetime( 1969, 7, 21, 2, 56, 15, 0 )
+        # t0 = time_util.totime( 1969, 7, 21, 2, 56, 15, 0 )[ 0 ]
+        t0 = datetime(1969, 7, 21, 2, 56, 15, 0)
 
-        tlp = ( ts - t0 ).total_seconds()
+        tlp = (ts - t0).total_seconds()
 
         # a lunar second in terrestrial seconds
         lsec2tsec = 0.9843529666671
@@ -148,7 +147,6 @@ class TimeUtilities(object):
 
 
     def UT2LT(self, ut, glon, iyyy, ddd):
-
         """ Convert UTC to Local Time
         GLON in DEGREES
         """
@@ -199,7 +197,6 @@ class TimeUtilities(object):
 
 
     def S2DN(self, tunix):
-
         """ Convert # of seconds from 1/1/1970 to number of days from 1/1/1
         """
 
@@ -207,7 +204,6 @@ class TimeUtilities(object):
 
 
     def JD2GD(self, jt):
-
         """ Convert Julian to Gregorian time
         """
 
@@ -217,14 +213,13 @@ class TimeUtilities(object):
 
 
     def GD2JD(self, year, month, dom, hour=0, minute=0, second=0):
-
         """ Convert Gregorian time to Julian date
         """
 
         ut = hour + minute / 60. + second / 3600.
 #        total_seconds = hour * 3600. + minute * 60. + second
 #        fracday = total_seconds / 86400.
-        sig =  1 if (100 * year + month -190002.5) > 0 else -1
+        sig = 1 if (100 * year + month - 190002.5) > 0 else - 1
         jd = (367. * year -
               int(7 * (year + int((month + 9) / 12)) / 4) +
               int(275 * month / 9) + dom + 1721013.5 + ut / 24 -
@@ -234,7 +229,6 @@ class TimeUtilities(object):
 
 
     def SubSol(self, datetime):
-
         """
             Subsolar geocentric latitude and longitude.
         """
